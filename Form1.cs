@@ -16,7 +16,10 @@ namespace Calculator
         Double val = 0;
         string text = "";
         bool oper_pres = false;
-        
+        double precision = 0.1;
+        double upLimitSinusCosinus = 1.0;
+
+
         public Form1()
         {
             InitializeComponent();
@@ -92,29 +95,165 @@ namespace Calculator
 
         private void sin_Click(object sender, EventArgs e)
         {
-           double x = Double.Parse(output.Text);
-            double result = sinFunction(x);
+            clearChart();
+            double x = Double.Parse(output.Text);
+            double xRadian = DegreestoRadian (x);
+            double result = Math.Sin((xRadian));
             output.Text = result.ToString();
 
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.Maximum = 2 * Math.PI;
+            chart1.ChartAreas[0].AxisY.Minimum = -upLimitSinusCosinus;
+            chart1.ChartAreas[0].AxisY.Maximum = upLimitSinusCosinus;
 
-            chart1.ChartAreas[0].AxisX.ScaleView.Zoomable = true;
-            chart1.Series[1].Points.AddXY(x, result);
+            // draw result point on chart
+            chart1.Series[1].Points.AddXY(xRadian, result);
 
 
-            for (double i = Math.Round(result)- 4; i < Math.Round(result) + 4; i++) {
-                chart1.Series[0].Points.AddXY(i, sinFunction(i));
+            for (double i =result- 5; i < result + 5; i+= precision) {
+                chart1.Series[0].Points.AddXY(i, Math.Sin(i));
             }
 
+        }
+       void clearChart() {
+            chart1.Series[0].Points.Clear();
+            chart1.Series[1].Points.Clear();
+            chart1.Series[2].Points.Clear();
+        }
+        double DegreestoRadian(double number) {
+            return number * (Math.PI / 180);
+        }
+
+        private void B_Click(object sender, EventArgs e)
+        {
+            clearChart();
+
+            double x = Double.Parse(output.Text);
+            double xRadian = DegreestoRadian(x);
+            double result = Math.Cos(xRadian);
+
+            // WriteMode result to calculator
+            output.Text = result.ToString();
+
+            chart1.ChartAreas[0].AxisX.Minimum = 0;
+            chart1.ChartAreas[0].AxisX.Maximum = 2 * Math.PI;
+            
+            chart1.ChartAreas[0].AxisY.Minimum = -upLimitSinusCosinus;
+            chart1.ChartAreas[0].AxisY.Maximum = upLimitSinusCosinus;
+
+            // draw point
+            chart1.Series[1].Points.AddXY(xRadian, result);
+
+            // draw function
+            for (double i = x - 5; i < x + 5; i += precision)
+            {
+                chart1.Series[0].Points.AddXY(i, Math.Cos(i));
+            }
+        }
+
+        private void btnDraw_Click(object sender, EventArgs e)
+        {
+
+            clearChart();
+            bool isError = false;
+            double a = 0.0, b = 0.0, c = 0.0;
+            errorProvider1.Clear();
+            try
+            {
+               a = Double.Parse(txtBoxA.Text);
+            }
+            catch (Exception error) {
+                errorProvider1.SetError(txtBoxA, "Podaj liczbę!");
+                isError = true;
+            }
+            try
+            {
+                b = Double.Parse(txtBoxB.Text);
+            }
+            catch (Exception error)
+            {
+                errorProvider1.SetError(txtBoxB, "Podaj liczbę!");
+                isError = true;
+            }
+            try
+            {
+                c = Double.Parse(txtBoxC.Text);
+            }
+            catch (Exception error)
+            {
+                errorProvider1.SetError(txtBoxC, "Podaj liczbę!");
+                isError = true;
+            }
+            if (isError != true) {
+                double x = 0;
+                try {
+                    x = Double.Parse(output.Text);
+                }
+                catch (Exception error) { }
+                double result = square(a, b, c, Double.Parse(output.Text));
+                // WriteMode result to calculator
+                output.Text = result.ToString();
+
+                // draw point result
+                chart1.Series[1].Points.AddXY(x, result);
+
+                // draw point zero
+                if (delta(a, b, c) > 0)
+                {
+                    chart1.Series[2].Points.AddXY(x1(a, b, c), 0);
+                    chart1.Series[2].Points.AddXY(x2(a, b, c), 0);
+                }
+                else if (delta(a, b, c) == 1) chart1.Series[2].Points.AddXY(x1(a, b, c), 0);
+
+
+                // draw function
+                for (double i = x - 5; i < x + 5; i += precision)
+                {
+                    chart1.Series[0].Points.AddXY(i, square(a, b, c, i));
+                }
+            }
 
         }
-       
-        double sinFunction(double x)
-        {
-            double degrees = x * (180 / Math.PI);
-            return Math.Sin(degrees);
+
+        double square(double a, double b, double c, double x) {
+            return a * x * x + b * x + c;
         }
-    
-    
+        double delta(double a, double b, double c) {
+            return (b* b) - (4 * a * c);
+        }
+        double x1(double a, double b, double c) {
+            return (-b - Math.Sqrt(delta(a, b, c))) / (2 * a);
+        }
+        double x2(double a, double b, double c)
+        {
+            return (-b + Math.Sqrt(delta(a, b, c))) / (2 * a);
+        }
+
+        private void button19_Click(object sender, EventArgs e)
+        {
+            clearChart();
+            double xRadian = DegreestoRadian(Double.Parse(output.Text));
+            double result = Math.Tan(xRadian);
+
+            // WriteMode result to calculator
+            output.Text = result.ToString();
+
+            chart1.ChartAreas[0].AxisX.Minimum = -(Math.PI / 2);
+            chart1.ChartAreas[0].AxisX.Maximum = (Math.PI / 2);
+
+
+            chart1.ChartAreas[0].AxisY.Minimum = -10;
+            chart1.ChartAreas[0].AxisY.Maximum = 10;
+
+            // draw point
+            chart1.Series[1].Points.AddXY(xRadian, result);
+
+            // draw function
+            for (double i = result -2; i < result  +2; i += precision)
+            {
+                chart1.Series[0].Points.AddXY(i, Math.Tan(i));
+            }
+        }
     }
 
 
