@@ -110,7 +110,7 @@ namespace Calculator
             chart1.Series[1].Points.AddXY(xRadian, result);
 
 
-            for (double i =result- 5; i < result + 5; i+= precision) {
+            for (double i =- 5; i <  5; i+= precision) {
                 chart1.Series[0].Points.AddXY(i, Math.Sin(i));
             }
 
@@ -145,7 +145,7 @@ namespace Calculator
             chart1.Series[1].Points.AddXY(xRadian, result);
 
             // draw function
-            for (double i = x - 5; i < x + 5; i += precision)
+            for (double i = -5.0; i < 5.0; i += precision)
             {
                 chart1.Series[0].Points.AddXY(i, Math.Cos(i));
             }
