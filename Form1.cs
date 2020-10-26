@@ -231,8 +231,9 @@ namespace Calculator
 
         private void button19_Click(object sender, EventArgs e)
         {
+            double x = Double.Parse(output.Text);
             clearChart();
-            double xRadian = DegreestoRadian(Double.Parse(output.Text));
+            double xRadian = DegreestoRadian(x);
             double result = Math.Tan(xRadian);
 
             // WriteMode result to calculator
@@ -249,7 +250,7 @@ namespace Calculator
             chart1.Series[1].Points.AddXY(xRadian, result);
 
             // draw function
-            for (double i = result -2; i < result  +2; i += precision)
+            for (double i = -(Math.PI / 2); i < (Math.PI / 2); i += precision)
             {
                 chart1.Series[0].Points.AddXY(i, Math.Tan(i));
             }
